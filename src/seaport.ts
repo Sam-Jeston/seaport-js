@@ -406,17 +406,13 @@ export class Seaport {
     return { orderComponents, approvalActions };
   }
 
-  private async _getSigner(
-    accountAddress?: string,
-  ): Promise<Signer | JsonRpcSigner> {
+  private async _getSigner(accountAddress?: string): Promise<Signer> {
     if (this.signer) {
       return this.signer;
     }
 
-    if (!("send" in this.provider)) {
-      throw new Error(
-        "Either signer or JsonRpcProvider with signer must be provided",
-      );
+    if (!(this.provider instanceof JsonRpcProvider)) {
+      throw new Error("Either signer or a JsonRpcProvider must be provided");
     }
 
     return (this.provider as JsonRpcProvider).getSigner(accountAddress);
