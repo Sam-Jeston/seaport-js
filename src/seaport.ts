@@ -406,16 +406,13 @@ export class Seaport {
     return { orderComponents, approvalActions };
   }
 
-  private async _getSigner(accountAddress?: string): Promise<Signer> {
+  // eslint-disable-next-line no-unused-vars
+  private async _getSigner(_accountAddress?: string): Promise<Signer> {
     if (this.signer) {
       return this.signer;
     }
 
-    if (!(this.provider instanceof JsonRpcProvider)) {
-      throw new Error("Either signer or a JsonRpcProvider must be provided");
-    }
-
-    return (this.provider as JsonRpcProvider).getSigner(accountAddress);
+    return (await this.provider) as unknown as Signer;
   }
 
   /**
@@ -973,7 +970,7 @@ export class Seaport {
 
     const fulfiller = await this._getSigner(accountAddress);
 
-    const fulfillerAddress = await fulfiller.getAddress();
+    const fulfillerAddress = accountAddress ?? (await fulfiller.getAddress());
 
     const allOffererOperators = fulfillOrderDetails.map(
       ({ order }) =>
